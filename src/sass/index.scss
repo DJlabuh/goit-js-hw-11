@@ -1,2 +1,7 @@
-@import './common';
-@import './example';
+@import './base/common';
+
+@import './components/container';
+@import './components/section';
+
+@import './layout/search-form';
+@import './layout/gallery';
