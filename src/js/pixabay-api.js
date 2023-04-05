@@ -23,12 +23,12 @@ export class PixabayAPI {
       ...this.baseSearchParams,
     });
 
-    return fetch(`${this.#BASE_URL}?${searchParams}`).then(res => {
-      if (!res.ok) {
-        throw new Error(res.status);
+    return fetch(`${this.#BASE_URL}?${searchParams}`).then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      return res.json();
+      return response.json();
     });
   }
 }

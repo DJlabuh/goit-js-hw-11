@@ -38,7 +38,9 @@ const handleSearchFormSubmit = event => {
     .fetchPhotos()
     .then(data => {
       if (!data.hits.length) {
-        console.log('Images not found!');
+        Notiflix.Notify.warning(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
         return;
       }
 
@@ -48,8 +50,9 @@ const handleSearchFormSubmit = event => {
 
       loadMoreBtnEl.classList.remove('is-hidden');
     })
-    .catch(err => {
-      console.log(err);
+    .catch(error => {
+      console.error(error);
+      Notiflix.Notify.failure(error.message);
     });
 };
 
@@ -59,7 +62,6 @@ const handleLoadMoreBtnClick = () => {
   pixabayAPI
     .fetchPhotos()
     .then(data => {
-      console.log(data);
       gallaryListEl.insertAdjacentHTML(
         'beforeend',
         createGalleryCards(data.hits)
@@ -67,8 +69,9 @@ const handleLoadMoreBtnClick = () => {
 
       hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
     })
-    .catch(err => {
-      console.log(err);
+    .catch(error => {
+      console.error(error);
+      Notiflix.Notify.failure(error.message);
     });
 };
 
