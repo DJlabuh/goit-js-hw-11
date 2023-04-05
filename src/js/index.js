@@ -1,7 +1,8 @@
 'use strict';
 
 import Notiflix from 'notiflix';
-// import { debounce } from 'lodash';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import { PixabayAPI } from './pixabay-api';
 import createGalleryCards from '../templates/gallery-card.hbs';
@@ -44,11 +45,17 @@ const handleSearchFormSubmit = event => {
         return;
       }
 
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+
       gallaryListEl.innerHTML = createGalleryCards(data.hits);
 
       hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
 
       loadMoreBtnEl.classList.remove('is-hidden');
+
+      const lightbox = new SimpleLightbox('.gallery a');
+
+      lightbox.refresh();
     })
     .catch(error => {
       console.error(error);
@@ -66,8 +73,20 @@ const handleLoadMoreBtnClick = () => {
         'beforeend',
         createGalleryCards(data.hits)
       );
+      const lightbox = new SimpleLightbox('.gallery a');
+      lightbox.refresh();
 
-      hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
+      const currentCount =
+        gallaryListEl.querySelectorAll('.gallery__item').length;
+
+      hideElement(loadMoreBtnEl, currentCount, data.totalHits);
+
+      if (currentCount === data.totalHits) {
+        loadMoreBtnEl.classList.add('is-hidden');
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }
     })
     .catch(error => {
       console.error(error);
