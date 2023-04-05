@@ -5,12 +5,12 @@ export class PixabayAPI {
   #BASE_URL = 'https://pixabay.com/api/';
 
   query = null;
-  per_page = 40;
+  count = 40;
   page = 1;
 
   baseSearchParams = {
     key: this.#API_KEY,
-    per_page: this.per_page,
+    per_page: this.count,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
@@ -19,6 +19,7 @@ export class PixabayAPI {
   fetchPhotos() {
     const searchParams = new URLSearchParams({
       q: this.query,
+      page: this.page,
       ...this.baseSearchParams,
     });
 
