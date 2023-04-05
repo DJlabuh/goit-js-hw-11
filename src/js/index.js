@@ -14,6 +14,13 @@ let currentQuery = '';
 
 const pixabayAPI = new PixabayAPI();
 
+const hideElement = (DOMElem, lengthArray, countImages) => {
+  if (lengthArray < countImages) {
+    DOMElem.classList.add('is-hidden');
+    return;
+  }
+};
+
 const handleSearchFormSubmit = event => {
   event.preventDefault();
 
@@ -30,12 +37,14 @@ const handleSearchFormSubmit = event => {
   pixabayAPI
     .fetchPhotos()
     .then(data => {
-      console.log(data);
-      gallaryListEl.innerHTML = createGalleryCards(data.hits);
-
-      if (data.total < pixabayAPI.count) {
+      if (!data.hits.length) {
+        console.log('Images not found!');
         return;
       }
+
+      gallaryListEl.innerHTML = createGalleryCards(data.hits);
+
+      hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
 
       loadMoreBtnEl.classList.remove('is-hidden');
     })
@@ -44,4 +53,24 @@ const handleSearchFormSubmit = event => {
     });
 };
 
+const handleLoadMoreBtnClick = () => {
+  pixabayAPI.page += 1;
+
+  pixabayAPI
+    .fetchPhotos()
+    .then(data => {
+      console.log(data);
+      gallaryListEl.insertAdjacentHTML(
+        'beforeend',
+        createGalleryCards(data.hits)
+      );
+
+      hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+loadMoreBtnEl.addEventListener('click', handleLoadMoreBtnClick);
 searchFormEl.addEventListener('submit', handleSearchFormSubmit);
