@@ -1,4 +1,4 @@
-'use strict';
+import axios from 'axios';
 
 export class PixabayAPI {
   #API_KEY = '15070975-6aac66cd3fa729614718982a3';
@@ -16,19 +16,18 @@ export class PixabayAPI {
     safesearch: true,
   };
 
-  fetchPhotos() {
+  async fetchPhotos() {
     const searchParams = new URLSearchParams({
       q: this.query,
       page: this.page,
       ...this.baseSearchParams,
     });
 
-    return fetch(`${this.#BASE_URL}?${searchParams}`).then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      return response.json();
-    });
+    try {
+      const response = await axios.get(`${this.#BASE_URL}?${searchParams}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
   }
 }
