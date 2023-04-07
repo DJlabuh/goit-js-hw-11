@@ -11,6 +11,7 @@ const searchFormEl = document.querySelector('#search-form');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const gallaryListEl = document.querySelector('.gallery');
 
+const scrollCards = 2;
 let currentQuery = '';
 
 const pixabayAPI = new PixabayAPI();
@@ -24,15 +25,13 @@ const hideElement = (DOMElem, lengthArray, countImages) => {
   }
 };
 
-const scrollToNewImages = () => {
+const scrollByCards = numCards => {
   const { height: cardHeight } = document
     .querySelector('.gallery')
     .firstElementChild.getBoundingClientRect();
 
-  const scrollHeight = cardHeight * 2;
-
   window.scrollBy({
-    top: scrollHeight,
+    top: cardHeight * numCards,
     behavior: 'smooth',
   });
 };
@@ -75,13 +74,12 @@ const handleSearchFormSubmit = async event => {
 
     hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
 
-    const lightbox = new SimpleLightbox('.gallery a');
+    const lightbox = new SimpleLightbox('.gallery a', {
+      overlayOpacity: 0.7,
+      showCounter: false,
+    });
 
     lightbox.refresh();
-
-    setTimeout(() => {
-      scrollToNewImages();
-    }, 1000);
   } catch (error) {
     console.error(error);
     Notiflix.Notify.failure(error.message);
@@ -111,8 +109,8 @@ const handleLoadMoreBtnClick = async () => {
     }
 
     setTimeout(() => {
-      scrollToNewImages();
-    }, 1000);
+      scrollByCards(scrollCards);
+    }, 1500);
   } catch (error) {
     console.error(error);
     Notiflix.Notify.failure(error.message);
