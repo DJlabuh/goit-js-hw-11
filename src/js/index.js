@@ -19,6 +19,8 @@ const hideElement = (DOMElem, lengthArray, countImages) => {
   if (lengthArray < countImages) {
     DOMElem.classList.add('is-hidden');
     return;
+  } else {
+    loadMoreBtnEl.classList.remove('is-hidden');
   }
 };
 
@@ -73,8 +75,6 @@ const handleSearchFormSubmit = async event => {
 
     hideElement(loadMoreBtnEl, data.hits.length, pixabayAPI.count);
 
-    loadMoreBtnEl.classList.remove('is-hidden');
-
     const lightbox = new SimpleLightbox('.gallery a');
 
     lightbox.refresh();
@@ -101,10 +101,7 @@ const handleLoadMoreBtnClick = async () => {
     const lightbox = new SimpleLightbox('.gallery a');
     lightbox.refresh();
 
-    const currentCount =
-      gallaryListEl.querySelectorAll('.gallery__item').length;
-
-    hideElement(loadMoreBtnEl, currentCount, data.totalHits);
+    const currentCount = document.getElementsByTagName('a').length;
 
     if (currentCount === data.totalHits) {
       loadMoreBtnEl.classList.add('is-hidden');
